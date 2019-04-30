@@ -1,6 +1,6 @@
-# ui
+# phonebook
 
-## Project setup
+## Project setup for the UI
 ```
 npm install
 ```
@@ -27,3 +27,8 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## Project setup for the API
+```
+dotnet restore
+```
