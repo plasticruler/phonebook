@@ -35,7 +35,7 @@ namespace PhoneCall.API.Controllers
             var result = await _userService.SaveAsync(user);
             if (!result.Success)
                     return BadRequest(result.Message);
-            return Ok();
+            return Ok(result);
         }
     }
 }

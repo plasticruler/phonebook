@@ -8,14 +8,31 @@
 		{
 			"name": "create-user",
 			"request": {
-				"method": "GET",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n\t\"EmailAddress\":\"btqa@plc.com\"\n}"
 				},
 				"url": {
-					"raw": ""
+					"raw": "https://localhost:5001/api/1.0/users",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"1.0",
+						"users"
+					]
 				}
 			},
 			"response": []
