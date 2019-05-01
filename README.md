@@ -9,26 +9,16 @@ npm install
 ```
 npm run serve
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Using
+The UI app is not 100% functional. Login using any email address/password. The userId is hardcoded to 102.
 
 ## Project setup for the API
 ```
 dotnet restore
 ```
+### Build and serve
+```
+dotnet build
+dotnet run
+```
+
