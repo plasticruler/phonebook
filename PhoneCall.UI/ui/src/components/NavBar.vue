@@ -1,8 +1,12 @@
 <template>
 <nav>
     <v-snackbar v-model="contactAdded" :timeout="4000" top color="success">
-      <span>Awesome! You added a new phone number.</span>
+      <span>Awesome! You added a new contact.</span>
       <v-btn color="white" flat @click="contactAdded = false">Close</v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="phoneNumberAdded" :timeout="4000" top color="success">
+      <span>Awesome! You added a new phone number.</span>
+      <v-btn color="white" flat @click="phoneNumberAdded = false">Close</v-btn>
     </v-snackbar>
     <v-toolbar app>
         <v-toolbar-side-icon class="grey--text" @click="drawer = !drawer"></v-toolbar-side-icon>
@@ -38,6 +42,9 @@
             <v-flex class="mt-4 mb-3">                
                 <ContactEdit @contactAdded="contactAdded=true"/>
             </v-flex>
+            <v-flex class=mt-4 mb-3>
+                <PhoneNumberEdit @phoneNumberAdded="phoneNumberAdded=true"/>
+            </v-flex>
         </v-layout>
         <v-list>
             <v-list-tile v-for="link in links" :key="link.text" router :to="link.route">
@@ -59,11 +66,13 @@
 <script>
 import Popup from './Popup'
 import ContactEdit from './ContactEdit'
+import PhoneNumberEdit from './PhoneNumberEdit'
 import {user} from '@/store/user' 
 export default {
 components:{
     Popup,
-    ContactEdit
+    ContactEdit,
+    PhoneNumberEdit
 },
   data() {
     return {
@@ -72,7 +81,8 @@ components:{
           {icon:'dashboard', text:'Dashboard', route:'/'},
           {icon:'folder', text:'My Phone Book', route:'/phonebook'}
       ],
-      contactAdded:false
+      contactAdded:false,
+      phoneNumberAdded:false
     };
   },
   methods:{

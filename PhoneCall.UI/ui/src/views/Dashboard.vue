@@ -23,7 +23,7 @@
             <div class="caption grey--text">Surname</div>
             <div>{{ contact.surname }}</div>
           </v-flex>
-          <v-flex xs21 sm4 md1>
+          <v-flex xs sm4 md1>
             <v-btn flat icon color="pink" @click="deleteItem(contact.id)">
               <v-icon>add</v-icon>
             </v-btn>

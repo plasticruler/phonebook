@@ -1,22 +1,20 @@
 <template>
   <v-dialog max-width="600px" v-model="dialog">
-    <v-btn v-if="IsUserAuthenticated" flat slot="activator" class="success">Edit Contact</v-btn>
+    <v-btn v-if="IsUserAuthenticated" flat slot="activator" class="success">Edit Phone Number</v-btn>
     <v-card>
       <v-card-title>
-        <h2>Edit contact</h2>
+        <h2>Edit Phone Number</h2>
       </v-card-title>
       <v-card-text>
         <v-form class="px-3" ref="form">
-          <v-text-field
-            v-model="FirstName"
-            label="FirstName"
-            prepend-icon="folder"
-            :rules="inputRules"
+          <v-text-field v-model="PhoneNumber" label="Number" prepend-icon="phone" :rules="phoneNumberValidation"
           ></v-text-field>
-          <v-text-field v-model="Surname" label="Surname" prepend-icon="edit" :rules="inputRules"></v-text-field>
-
+          <v-combobox
+          v-model="PhoneNumberType"
+          :items="PhoneNumberTypes"
+          label="Select a phone number type"
+        ></v-combobox>
           <v-spacer></v-spacer>
-
           <v-btn flat @click="submit" class="success mx-0 mt-3" :loading="loading">Save</v-btn>
         </v-form>
       </v-card-text>
@@ -28,10 +26,14 @@ import axios from "axios"
 export default {
   data() {
     return {
-      FirstName: "",
-      Surname: "",
-      UserId: 102, //hardcoded      
+      PhoneNumberTypes:['Home','Work','Mobile_1','Mobile_2'],    
+      PhoneNumber:'',  
+      UserID: 102, //hardcoded
+      ContactID : 401, //rami
       menu: false,
+      phoneNumberValidation:[
+            v => new RegExp("^[0-9]{10}$").test(v)||"Phone number must be in form 0112341111" //overly simplified
+      ],
       inputRules: [
         v => !!v || "This field is required.",
         v => v.length >= 3 || "Minimum length of this field is 3 characters."
@@ -44,17 +46,21 @@ export default {
     
     submit() {
       if (this.$refs.form.validate()) {
+          
         this.loading = true;
-        const contact = {
-          UserID: 102,
-          FirstName: this.FirstName,
-          Surname: this.Surname
-        };     
-        var url = "https://localhost:5001/api/1.0/contacts/";
+        const phoneNumber = {
+          UserID: 101,
+          ContactId: 401,
+          Number: this.PhoneNumber,
+          PhoneNumberType : this.PhoneNumberTypes.indexOf(this.PhoneNumberType)+1
+        };
+        console.log(phoneNumber);     
+        var url = "https://localhost:5001/api/1.0/phonenumbers/";
         axios
-          .post(url, contact)
-          .then(()=> {            
-            this.$emit("contactAdded");
+          .post(url, phoneNumber)
+          .then(()=> {      
+                
+            this.$emit("phoneNumberAdded");
           })
           .catch(function(error) {              
             // handle error 
