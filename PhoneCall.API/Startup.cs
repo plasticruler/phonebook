@@ -18,6 +18,7 @@ using PhoneCall.API.Persistence.Repositories;
 using PhoneCall.API.Services;
 using AutoMapper;
 using PhoneCall.API.Mapping;
+using Microsoft.OpenApi.Models;
 
 namespace PhoneCall.API
 {
@@ -33,8 +34,7 @@ namespace PhoneCall.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging();
-            
+            services.AddLogging();            
         
             services.AddScoped<IUnitOfWork, UnitOfWork>();            
             services.AddDbContext<AppDbContext>(options=>{
@@ -42,8 +42,7 @@ namespace PhoneCall.API
             });
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IContactRepository, ContactRepository>();      
-            services.AddScoped<IPhoneNumberRepository, PhoneNumberRepository>();
-            
+            services.AddScoped<IPhoneNumberRepository, PhoneNumberRepository>();            
 
             services.AddScoped<IPhoneNumberService, PhoneNumberService>();
             services.AddScoped<IContactService, ContactService>();
@@ -58,6 +57,9 @@ namespace PhoneCall.API
                             .AddJsonOptions(
                                 options=>options.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore
                             );
+            services.AddSwaggerGen(c=>{
+                c.SwaggerDoc("v1", new OpenApiInfo{Title="Phonebook API", Version="v1"});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,6 +81,11 @@ namespace PhoneCall.API
                 .AllowCredentials()
                 .AllowAnyOrigin());
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c=>{
+                c.SwaggerEndpoint("/swagger/v1/swagger.json","Phonebook API v1");
+                c.RoutePrefix = string.Empty;
+            });
         }
     }
 }

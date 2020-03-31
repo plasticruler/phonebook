@@ -1,7 +1,5 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using PhoneCall.API.Domain.Models;
 using PhoneCall.API.Domain.Services.Communication;
 
