@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,8 @@ using PhoneCall.API.Resources;
 
 namespace PhoneCall.API.Controllers
 {
-    [Route("api/1.0/[controller]")]
+    [Route("api/1.0/[controller]")]  
+    [Produces(MediaTypeNames.Application.Json)]  
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;

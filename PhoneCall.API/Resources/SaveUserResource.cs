@@ -5,5 +5,9 @@ namespace PhoneCall.API.Resources{
         [Required]
         [MaxLength(50)]
         public string EmailAddress{get;set;}
+        
+        [Required]
+        [MaxLength(128)]
+        public string PasswordHash{ get; set; }
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PhoneCall.API.Domain.Models;
@@ -10,7 +12,8 @@ using PhoneCall.API.Resources;
 
 namespace PhoneCall.API.Controllers
 {
-    [Route("api/1.0/[controller]")]
+    [Route("api/1.0/[controller]")]   
+    [Produces(MediaTypeNames.Application.Json)] 
     public class PhoneNumbersController : ControllerBase
     {
         private readonly IPhoneNumberService _phoneNumberService;
@@ -37,6 +40,8 @@ namespace PhoneCall.API.Controllers
             await _phoneNumberService.DeleteAsync(phoneNumberId);
         }
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]        
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> PostAsyc([FromBody] SavePhoneNumberResource resource){
             //security hole here..
             if (!ModelState.IsValid)
@@ -53,7 +58,7 @@ namespace PhoneCall.API.Controllers
                     return BadRequest(result.Message);            
             }
             
-            return Ok();
+            return CreatedAtAction(nameof(GetByUserIdAsync),new {userId=resource.UserID},null);
         }
     }
 }
