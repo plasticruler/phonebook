@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,8 @@ namespace PhoneBook.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PhoneBookController : ControllerBase
+    [Authorize]
+    public class PhoneBookController : BaseController
     {
         private readonly AppDbContext _context;
 
@@ -24,7 +26,7 @@ namespace PhoneBook.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserPhoneBook>>> GetPhoneBook()
         {
-            return await _context.PhoneBook.ToListAsync();
+            return await _context.PhoneBook.Where(p=>p.UserId==UserId).ToListAsync();
         }
 
         // GET: api/PhoneBook/5
@@ -33,7 +35,7 @@ namespace PhoneBook.API.Controllers
         {
             var userPhoneBook = await _context.PhoneBook.FindAsync(id);
 
-            if (userPhoneBook == null)
+            if (userPhoneBook == null || userPhoneBook.UserId != UserId)
             {
                 return NotFound();
             }
@@ -47,7 +49,7 @@ namespace PhoneBook.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUserPhoneBook(long id, UserPhoneBook userPhoneBook)
         {
-            if (id != userPhoneBook.Id)
+            if (id != userPhoneBook.Id || userPhoneBook.UserId != UserId)
             {
                 return BadRequest();
             }
@@ -79,6 +81,7 @@ namespace PhoneBook.API.Controllers
         [HttpPost]
         public async Task<ActionResult<UserPhoneBook>> PostUserPhoneBook(UserPhoneBook userPhoneBook)
         {
+            userPhoneBook.UserId = UserId.Value;            
             _context.PhoneBook.Add(userPhoneBook);
             await _context.SaveChangesAsync();
 
@@ -90,7 +93,7 @@ namespace PhoneBook.API.Controllers
         public async Task<ActionResult<UserPhoneBook>> DeleteUserPhoneBook(long id)
         {
             var userPhoneBook = await _context.PhoneBook.FindAsync(id);
-            if (userPhoneBook == null)
+            if (userPhoneBook == null || userPhoneBook.UserId != UserId)
             {
                 return NotFound();
             }

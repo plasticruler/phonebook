@@ -15,6 +15,9 @@ using PhoneBook.API.Models;
 using Microsoft.OpenApi.Models;
 using System.IO;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace PhoneBook.API
 {
@@ -23,6 +26,7 @@ namespace PhoneBook.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -31,7 +35,9 @@ namespace PhoneBook.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(optionsAction=>{
-                optionsAction.UseInMemoryDatabase("PhoneBookDb");
+                //optionsAction.UseInMemoryDatabase("PhoneBookDb");
+                optionsAction.UseSqlite("Data Source=phonebook.db");               
+
             });
             services.AddControllers();
             services.AddSwaggerGen(c=>{
@@ -49,10 +55,25 @@ namespace PhoneBook.API
                 c.IncludeXmlComments(xmlPath);
                 
             });
+            //add jwt
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext context)
         {
             app.UseSwagger();
 
@@ -64,6 +85,7 @@ namespace PhoneBook.API
             if (env.IsDevelopment())
             {
                 app.UseExceptionHandler("/error-local-development");
+                context.Database.EnsureCreated();
             }
             else{
                 app.UseExceptionHandler("/error");
@@ -72,6 +94,8 @@ namespace PhoneBook.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

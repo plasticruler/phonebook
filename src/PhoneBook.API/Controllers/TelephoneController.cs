@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,9 @@ namespace PhoneBook.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TelephoneController : ControllerBase
+    [Authorize]
+
+    public class TelephoneController : BaseController
     {
         private readonly AppDbContext _context;
 
