@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace PhoneBook.UI.Infrastructure.Messager
@@ -19,16 +21,32 @@ namespace PhoneBook.UI.Infrastructure.Messager
             SetHeaders(client);
         }
 
-        public R Get<R>(string url)
-        {
-            //client.GetAsync(url).Result.Content.
-            return default(R);
+        public async Task<R> Get<R>(string url)
+        {            
+            R result = default(R);
+            HttpResponseMessage response = await client.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var str = await response.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<R>(str);
+            }
+            return result;
         }
 
-        public R Post<T, R>(string url, T payload, params string[] parameters)
+        public async Task<R> Post<T, R>(string url, T payload, params string[] parameters)
         {
-            throw new NotImplementedException();
+            R result = default(R);
+            var json = JsonConvert.SerializeObject(payload);
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync(url, stringContent);
+            if (response.IsSuccessStatusCode)
+            {
+                var str = await response.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<R>(str);
+            }
+            return result;
         }
+
         private void SetHeaders(HttpClient client)
         {
             client.DefaultRequestHeaders.Accept.Clear();

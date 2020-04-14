@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace PhoneBook.UI.Infrastructure
 {
-    public interface IPhoneBookOrchestrator
+    public interface IPhoneBookOrchestrator<T>
     {
+        T CreateUser(string firstName, string surname, string password, string emailAddress);
     }
 }

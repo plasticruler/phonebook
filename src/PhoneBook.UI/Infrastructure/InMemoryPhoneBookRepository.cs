@@ -23,7 +23,7 @@ namespace PhoneBook.UI.Infrastructure
                     EmailAddress = emailAddress,
                     Surname = surname,
                     FirstName = firstName,
-                    PasswordHash = password
+                    Password = password
                 }
                 );
             return emailAddress;
@@ -112,7 +112,7 @@ namespace PhoneBook.UI.Infrastructure
                 FirstName ="Mark",
                 Surname = "Hamilton",
                 EmailAddress = "mark@ca.com",
-                PasswordHash  = "12345"
+                Password  = "12345"
             },
             new UserModel()
             {
@@ -120,7 +120,7 @@ namespace PhoneBook.UI.Infrastructure
                 FirstName = "Paul",
                 Surname = "Bonsafta",
                 EmailAddress = "paul@t.com",
-                PasswordHash = "22345"
+                Password = "22345"
             },
             new UserModel()
             {
@@ -128,7 +128,7 @@ namespace PhoneBook.UI.Infrastructure
                 FirstName = "Matthew",
                 Surname = "De Vries",
                 EmailAddress = "matt@e.com",
-                PasswordHash = "12445"
+                Password = "12445"
             },
             new UserModel()
             {
@@ -136,7 +136,7 @@ namespace PhoneBook.UI.Infrastructure
                 FirstName = "Job",
                 Surname = "Dangle",
                 EmailAddress = "a.com",
-                PasswordHash = "12443"
+                Password = "12443"
             }};
 
             /////

@@ -14,7 +14,14 @@ namespace PhoneBook.UI.Models
         public string Surname { get; set; }
         [Required]
         public string EmailAddress { get; set; }
-        public string PasswordHash { get; set; }
+        [Required]
+        [MinLength(8)]
+        public string Password { get; set; }
+
+        [Required]
+        [RegularExpression("(?!^[0-9]*$)(?!^[a-zA-Z]*$)^([a-zA-Z0-9]{8,10})$", ErrorMessage = "Password not complex enough.")]
+        [Compare("Password", ErrorMessage = "Passwords should match.")]
+        public string RetypedPassword { get; set; }
         public IEnumerable<UserPhonebook> PhoneBooks { get; set; }
     }
 }

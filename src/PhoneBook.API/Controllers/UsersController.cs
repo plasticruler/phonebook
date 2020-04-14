@@ -2,15 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.API.Models;
+using PhoneBook.API.Models.DTO;
+using PhoneBook.API.Utilities;
 
 namespace PhoneBook.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -22,6 +26,7 @@ namespace PhoneBook.API.Controllers
 
         // GET: api/Users
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
@@ -29,6 +34,7 @@ namespace PhoneBook.API.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(long id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -45,6 +51,7 @@ namespace PhoneBook.API.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutUser(long id, User user)
         {
             if (id != user.Id)
@@ -77,16 +84,26 @@ namespace PhoneBook.API.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(UserForCreate user)
         {
-            _context.Users.Add(user);
+            var usr = new User()
+            {
+                EmailAddress = user.EmailAddress,
+                FirstName = user.FirstName,
+                Surname = user.Surname,
+                PasswordHash = PasswordFunctions.GetSHA256(user.Password)
+            };
+
+            _context.Users.Add(usr);
+            
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUser), new { id = usr.Id }, user);
         }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> DeleteUser(long id)
         {
             var user = await _context.Users.FindAsync(id);

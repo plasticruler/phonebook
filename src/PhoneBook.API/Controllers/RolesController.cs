@@ -1,8 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,49 +11,48 @@ namespace PhoneBook.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class ContactController : BaseController
+    public class RolesController : BaseController
     {
         private readonly AppDbContext _context;
 
-        public ContactController(AppDbContext context)
+        public RolesController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Contact
+        // GET: api/Roles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
+        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
-            return await _context.Contacts.ToListAsync();
+            return await _context.Roles.ToListAsync();
         }
 
-        // GET: api/Contact/5
+        // GET: api/Roles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Contact>> GetContact(long id)
+        public async Task<ActionResult<Role>> GetRole(long id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
+            var role = await _context.Roles.FindAsync(id);
 
-            if (contact == null)
+            if (role == null)
             {
                 return NotFound();
             }
 
-            return contact;
+            return role;
         }
 
-        // PUT: api/Contact/5
+        // PUT: api/Roles/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContact(long id, Contact contact)
+        public async Task<IActionResult> PutRole(long id, Role role)
         {
-            if (id != contact.Id)
+            if (id != role.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(contact).State = EntityState.Modified;
+            _context.Entry(role).State = EntityState.Modified;
 
             try
             {
@@ -62,7 +60,7 @@ namespace PhoneBook.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ContactExists(id))
+                if (!RoleExists(id))
                 {
                     return NotFound();
                 }
@@ -75,37 +73,37 @@ namespace PhoneBook.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Contact
+        // POST: api/Roles
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Contact>> PostContact(Contact contact)
+        public async Task<ActionResult<Role>> PostRole(Role role)
         {
-            _context.Contacts.Add(contact);
+            _context.Roles.Add(role);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetContact", new { id = contact.Id }, contact);
+            return CreatedAtAction("GetRole", new { id = role.Id }, role);
         }
 
-        // DELETE: api/Contact/5
+        // DELETE: api/Roles/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Contact>> DeleteContact(long id)
+        public async Task<ActionResult<Role>> DeleteRole(long id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
-            if (contact == null)
+            var role = await _context.Roles.FindAsync(id);
+            if (role == null)
             {
                 return NotFound();
             }
 
-            _context.Contacts.Remove(contact);
+            _context.Roles.Remove(role);
             await _context.SaveChangesAsync();
 
-            return contact;
+            return role;
         }
 
-        private bool ContactExists(long id)
+        private bool RoleExists(long id)
         {
-            return _context.Contacts.Any(e => e.Id == id);
+            return _context.Roles.Any(e => e.Id == id);
         }
     }
 }

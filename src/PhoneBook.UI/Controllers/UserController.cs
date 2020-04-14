@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PhoneBook.UI.Infrastructure;
 using PhoneBook.UI.Models;
+using PhoneBook.UI.Models.DTO;
 
 namespace PhoneBook.UI.Controllers
 {
@@ -40,7 +41,7 @@ namespace PhoneBook.UI.Controllers
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromForm] UserModel userModel)
+        public ActionResult Create([FromForm] UserForCreate userModel)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +50,7 @@ namespace PhoneBook.UI.Controllers
 
             try
             {
-                _phoneBookRepository.CreateUser(userModel.FirstName, userModel.Surname, "xxxxx", userModel.EmailAddress);
+                _phoneBookRepository.CreateUser(userModel.FirstName, userModel.Surname, userModel.Password, userModel.EmailAddress);
                 return RedirectToAction(nameof(Index));
             }
             catch
