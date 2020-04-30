@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 namespace PhoneBook.UI.Models
 {
     public class UserPhonebook:BaseModel
-    {
+    {        
         public UserPhonebook()
         {
-            Contacts = new List<ContactModel>();
+            Contacts = new List<Contact>();
         }
         public int OwnerId { get; set; }
         public UserModel Owner { get; set; }
         public string Name { get; set; }
-        public List<ContactModel> Contacts { get; set; }
+        public List<Contact> Contacts { get; set; }
     }
 }

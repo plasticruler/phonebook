@@ -28,12 +28,20 @@ namespace PhoneBook.API.Controllers
         {
             return await _context.PhoneBook.Where(p=>p.UserId==UserId).ToListAsync();
         }
-
+        [HttpGet("GetUserPhoneBooks/{id}")]
+        public async Task<ActionResult<IEnumerable<UserPhoneBook>>> GetUserPhoneBooks(long id)
+        {
+            long userId = UserId.Value;
+            return await _context.PhoneBook.Where(x => x.UserId == userId)
+                .ToListAsync();
+        }
         // GET: api/PhoneBook/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserPhoneBook>> GetUserPhoneBook(long id)
         {
-            var userPhoneBook = await _context.PhoneBook.FindAsync(id);
+            var userPhoneBook = await _context.PhoneBook
+                .Include(c => c.Contacts)
+                .FirstAsync(x => x.Id == id);
 
             if (userPhoneBook == null || userPhoneBook.UserId != UserId)
             {

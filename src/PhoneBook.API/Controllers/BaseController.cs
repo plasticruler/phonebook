@@ -21,10 +21,7 @@ namespace PhoneBook.API.Controllers
                 if (CurrentUser == null)
                     return null;
 
-                if (CurrentUser.HasClaim(c => c.Type == JwtRegisteredClaimNames.NameId))
-                    return long.Parse(CurrentUser.FindFirstValue(JwtRegisteredClaimNames.NameId));
-                
-                return null;
+                return long.Parse(CurrentUser.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
             }
         }
         protected bool HasRole(string roleName)

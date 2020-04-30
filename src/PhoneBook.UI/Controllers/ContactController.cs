@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PhoneBook.UI.Infrastructure;
+using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
 
 namespace PhoneBook.UI.Controllers
@@ -14,7 +15,9 @@ namespace PhoneBook.UI.Controllers
     {
         private readonly IPhoneBookRepository _phoneBookRepository;
 
-        public ContactController(IPhoneBookRepository phoneBookRepository, IConfiguration configuration):base(configuration)
+        public ContactController(IPhoneBookRepository phoneBookRepository, IMessager messager, 
+            IConfiguration configuration,
+            IHttpContextAccessor contextAccessor):base(configuration,messager, contextAccessor)
         {
             _phoneBookRepository = phoneBookRepository;
         }
@@ -40,7 +43,7 @@ namespace PhoneBook.UI.Controllers
         // POST: Contact/Create
         [HttpPost]
         [ValidateAntiForgeryToken]        
-        public ActionResult Create(int id, [FromForm] ContactModel contact)
+        public ActionResult Create(int id, [FromForm] Contact contact)
         {
             if (!ModelState.IsValid)
             {
@@ -48,7 +51,7 @@ namespace PhoneBook.UI.Controllers
             }
             try
             {
-                // TODO: Add insert logic here
+                             
                 _phoneBookRepository.CreateContact(id, contact.FirstName, contact.Lastname,contact.PhoneNumber, (PhoneNumberType) Enum.Parse(typeof(PhoneNumberType),contact.PhoneNumberType,true));
                 return RedirectToAction(nameof(Details),"UserPhoneBook",new { id =id});
             }

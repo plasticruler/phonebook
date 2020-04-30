@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace PhoneBook.UI.Models
 {
-    public class ContactModel:BaseModel
+    public class Contact:BaseModel
     {
         
-        public ContactModel()
+        public Contact()
         {
             PhoneNumbers = new List<TelephoneNumber>();
         }

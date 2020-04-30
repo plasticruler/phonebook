@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PhoneBook.API.Models;
 using PhoneBook.API.Models.DTO;
 using PhoneBook.API.Utilities;
@@ -22,6 +23,7 @@ namespace PhoneBook.API.Controllers
         public UsersController(AppDbContext context)
         {
             _context = context;
+            JsonSerializerSettings jss = new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
         }
 
         // GET: api/Users
@@ -37,8 +39,10 @@ namespace PhoneBook.API.Controllers
         [Authorize]
         public async Task<ActionResult<User>> GetUser(long id)
         {
-            var user = await _context.Users.FindAsync(id);
-
+            var user = await _context.Users
+                .Include(p => p.PhoneBooks)
+                .FirstAsync(x => x.Id == id);
+                
             if (user == null)
             {
                 return NotFound();

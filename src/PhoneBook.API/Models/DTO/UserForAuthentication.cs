@@ -10,5 +10,6 @@ namespace PhoneBook.API.Models.DTO
         public T Id { get; set; }
         public string EmailAddress { get; set; }
         public string PasswordHash { get; set; }
+        public string GivenName { get; set; }
     }
 }

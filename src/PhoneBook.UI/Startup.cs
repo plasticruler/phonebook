@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PhoneBook.UI.Infrastructure;
+using PhoneBook.UI.Infrastructure.Messager;
 
 namespace PhoneBook.UI
 {
@@ -27,8 +30,17 @@ namespace PhoneBook.UI
         {
             services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
-            services.AddSingleton<IPhoneBookRepository>(new InMemoryPhoneBookRepository());
-          
+            services.AddHttpContextAccessor();
+            services.AddScoped<IMessager>(c=>new Messager(Configuration));
+            services.AddScoped<IPhoneBookRepository>(c => new ApiPhoneBookRepository(c.GetService<IMessager>(), 
+                Configuration));            
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.ExpireTimeSpan = new TimeSpan(96,  0,  0);
+                    options.LoginPath = "/Login/Login";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,9 +57,13 @@ namespace PhoneBook.UI
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+
             app.UseRouting();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

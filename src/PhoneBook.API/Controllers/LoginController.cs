@@ -24,7 +24,7 @@ namespace PhoneBook.API.Controllers
             _context = context;
         }
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost]       
         public IActionResult Login([FromBody] UserForAuthentication<long> login)
         {
             IActionResult response = Unauthorized();
@@ -32,8 +32,13 @@ namespace PhoneBook.API.Controllers
 
             if (user != null)
             {
-                var tokenString = GenerateJSONWebToken(user);
-                response = Ok(new { token = tokenString });
+                var tokenString = GenerateJSONWebToken(user);                
+                response = new JsonResult(new
+                {
+                    user.Id,
+                    JsonToken = tokenString,
+                    FirstName = user.GivenName
+                });
             }
 
             return response;
@@ -46,7 +51,7 @@ namespace PhoneBook.API.Controllers
         private IEnumerable<Claim> GetClaims(UserForAuthentication<long> user){
             
             var claims = new List<Claim>() {
-                new Claim(JwtRegisteredClaimNames.Email, user.EmailAddress),
+                new Claim(JwtRegisteredClaimNames.Email, user.EmailAddress),              
                 new Claim(JwtRegisteredClaimNames.NameId,user.Id.ToString()),
                 new Claim("Roles", GetRoles(user)), 
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -74,7 +79,7 @@ namespace PhoneBook.API.Controllers
               
             if (userAccount != null)
             {
-                user = new UserForAuthentication<long> {  EmailAddress = userAccount.EmailAddress, Id = userAccount.Id };
+                user = new UserForAuthentication<long> {  EmailAddress = userAccount.EmailAddress, Id = userAccount.Id, GivenName = userAccount.FirstName };
             }
             return user;
         }
