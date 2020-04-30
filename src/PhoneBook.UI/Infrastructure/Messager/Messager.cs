@@ -21,28 +21,40 @@ namespace PhoneBook.UI.Infrastructure.Messager
             SetHeaders(client);
         }
 
-        public async Task<R> Get<R>(string url)
+        public async Task<R> Get<R>(string url, string jwtToken=null)
         {            
             R result = default(R);
+            if (!string.IsNullOrWhiteSpace(jwtToken))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{jwtToken}");
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var str = await response.Content.ReadAsStringAsync();
                 result = JsonConvert.DeserializeObject<R>(str);
             }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
+            }
             return result;
         }
 
-        public async Task<R> Post<T, R>(string url, T payload, params string[] parameters)
+        public async Task<R> Post<T, R>(string url, T payload, string jwtToken=null, params string[] parameters)
         {
             R result = default(R);
             var json = JsonConvert.SerializeObject(payload);
             var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            if (!string.IsNullOrWhiteSpace(jwtToken))
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{jwtToken}");
             HttpResponseMessage response = await client.PostAsync(url, stringContent);
             if (response.IsSuccessStatusCode)
             {
                 var str = await response.Content.ReadAsStringAsync();
                 result = JsonConvert.DeserializeObject<R>(str);
+            }
+            else
+            {
+                throw new Exception(response.ReasonPhrase);
             }
             return result;
         }
@@ -54,7 +66,6 @@ namespace PhoneBook.UI.Infrastructure.Messager
                     new MediaTypeWithQualityHeaderValue("application/json")
                     );
             client.DefaultRequestHeaders.Add("User-Agent", "PhoneBook.API Client v1");
-            client.DefaultRequestHeaders.Add("X-Api-Key", "112233");
         }
     }
 }

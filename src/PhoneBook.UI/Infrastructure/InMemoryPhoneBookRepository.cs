@@ -1,4 +1,5 @@
 ﻿using PhoneBook.UI.Models;
+using PhoneBook.UI.Models.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace PhoneBook.UI.Infrastructure
     {
         List<UserModel> _users;
         List<UserPhonebook> _phoneBooks;
-        List<ContactModel> _contacts;        
+        List<Contact> _contacts;        
         public InMemoryPhoneBookRepository()
         {
             SeedDatabase();
@@ -49,7 +50,7 @@ namespace PhoneBook.UI.Infrastructure
             return _users.OrderBy(x => x.Surname);
         }
 
-        public string LoginUser(string emailAddress, string passwordHash)
+        public AuthenticatedUser LoginUser(string emailAddress, string passwordHash)
         {
             throw new NotImplementedException();
         }
@@ -79,12 +80,12 @@ namespace PhoneBook.UI.Infrastructure
             ); 
             return result.ToList();
         }
-        private List<ContactModel> GenerateContacts(UserPhonebook phoneBook, int maxCount = 10)
+        private List<Contact> GenerateContacts(UserPhonebook phoneBook, int maxCount = 10)
         {
             return Enumerable.Range(0, maxCount).ToArray().Select(x =>
             {
                 //create the contact numbers                
-                var c = new ContactModel()
+                var c = new Contact()
                 {
                     FirstName = GetRandomName(),
                     Lastname = GetRandomSurname(),                   
@@ -103,7 +104,7 @@ namespace PhoneBook.UI.Infrastructure
         private void SeedDatabase()
         {
             _phoneBooks = new List<UserPhonebook>();            
-            _contacts = new List<ContactModel>();
+            _contacts = new List<Contact>();
             _users = new List<UserModel>()
             {
             new UserModel()
@@ -166,7 +167,7 @@ namespace PhoneBook.UI.Infrastructure
             return _phoneBooks.First(x => x.Id == id);
         }
 
-        public ContactModel GetContact(int id)
+        public Contact GetContact(int id)
         {
             return _phoneBooks.SelectMany(p=>p.Contacts).First(x=>x.Id==id);
         }
@@ -180,7 +181,7 @@ namespace PhoneBook.UI.Infrastructure
         {
             var pb = _phoneBooks.First(x => x.Id == phoneBookId);
             var id = _contacts.Count(x=>x.PhoneBookId==phoneBookId) + 1;
-            var contact = new ContactModel
+            var contact = new Contact
             {
                 Id = id,
                 FirstName = firstName,
@@ -217,6 +218,16 @@ namespace PhoneBook.UI.Infrastructure
             }); ;
             contact.PhoneNumbers = numbers;
             return contact.PhoneNumbers.Max(c => c.Id);
+        }
+
+        public void SetAuthKey(string jwtToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserPhonebook CreatePhoneBook(int userId, string phoneBookName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

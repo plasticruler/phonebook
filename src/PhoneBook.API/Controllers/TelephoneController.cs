@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.API.Models;
+using PhoneBook.API.Models.DTO;
 
 namespace PhoneBook.API.Controllers
 {
@@ -83,6 +84,25 @@ namespace PhoneBook.API.Controllers
         public async Task<ActionResult<TelephoneNumber>> PostTelephoneNumber(TelephoneNumber telephoneNumber)
         {
             _context.TelephoneNumber.Add(telephoneNumber);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTelephoneNumber", new { id = telephoneNumber.Id }, telephoneNumber);
+        }
+
+        [HttpPost("CreateForTelephoneNumber")]
+        public async Task<ActionResult<TelephoneNumber>> CreateForTelephoneNumber(TelephoneNumberForCreate telephoneNumberForCreate)
+        {
+            //check that the contact belongs to the currently logged in user
+            var tn = _context.Contacts.Find(telephoneNumberForCreate.ContactId).PhoneBook;
+            var telephoneNumber = new TelephoneNumber()
+            {
+                ContactId = telephoneNumberForCreate.ContactId,
+                Number = telephoneNumberForCreate.Number,
+                NumberType = telephoneNumberForCreate.NumberType
+            };
+
+            _context.TelephoneNumber.Add(telephoneNumber);
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTelephoneNumber", new { id = telephoneNumber.Id }, telephoneNumber);

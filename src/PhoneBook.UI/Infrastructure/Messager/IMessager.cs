@@ -7,7 +7,7 @@ namespace PhoneBook.UI.Infrastructure.Messager
 {
     public interface IMessager
     {
-        Task<R> Post<T, R>(string url, T payload, params string[] parameters);
-        Task<R> Get<R>(string url);
+        Task<TResult> Post<TPayload, TResult>(string url, TPayload payload, string jwtToken=null, params string[] parameters);
+        Task<TResult> Get<TResult>(string url, string jwtToken=null);
     }
 }

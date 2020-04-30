@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PhoneBook.API.Models;
+using PhoneBook.API.Models.DTO;
 
 namespace PhoneBook.API.Controllers
 {
@@ -33,7 +34,9 @@ namespace PhoneBook.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Contact>> GetContact(long id)
         {
-            var contact = await _context.Contacts.FindAsync(id);
+            var contact = await _context.Contacts
+                .Include(c=>c.PhoneNumbers)
+                .FirstAsync(c=>c.Id == id);
 
             if (contact == null)
             {
@@ -81,9 +84,37 @@ namespace PhoneBook.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
+            var pb = _context.PhoneBook.Find(contact.PhoneBookId);
+            if (pb == null || pb.UserId != UserId)
+                return NotFound("PhoneBook not found or user invalid.");
+            _context.Contacts.Add(contact);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetContact", new { id = contact.Id }, contact);
+        }
+
+        [HttpPost("CreateForContact")]
+        public async Task<ActionResult<Contact>> CreateForContact(ContactForCreate contactForCreate)
+        {
+            var pb = _context.PhoneBook.Find(contactForCreate.PhoneBookId);
+            if (pb == null || pb.UserId != UserId)
+                return NotFound("PhoneBook not found or user invalid.");
+            var contact = new Contact()
+            {
+                Lastname = contactForCreate.LastName,
+                FirstName = contactForCreate.FirstName,
+                PhoneBookId = contactForCreate.PhoneBookId
+            };
             _context.Contacts.Add(contact);
             await _context.SaveChangesAsync();
 
+            _context.TelephoneNumber.Add(new TelephoneNumber()
+            {
+                ContactId = contact.Id,
+                Number = contactForCreate.PhoneNumber,
+                NumberType = contactForCreate.PhoneNumberType
+            });
+            await _context.SaveChangesAsync();
+                
             return CreatedAtAction("GetContact", new { id = contact.Id }, contact);
         }
 

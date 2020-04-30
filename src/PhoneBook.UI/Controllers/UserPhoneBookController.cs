@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using PhoneBook.UI.Infrastructure;
 using PhoneBook.UI.Models;
 
 namespace PhoneBook.UI.Controllers
 {
-    public class UserPhonebookController : Controller
+    public class UserPhonebookController : BaseController
     {
         private readonly IPhoneBookRepository _phonebookRepository;
 
-        public UserPhonebookController(IPhoneBookRepository phonebookRepository)
+        public UserPhonebookController(IPhoneBookRepository phonebookRepository, IConfiguration configuration,
+            Infrastructure.Messager.IMessager messager, IHttpContextAccessor contextAccessor) : base(configuration, messager, contextAccessor)
         {
             _phonebookRepository = phonebookRepository;
+            _phonebookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
         }
         // GET: UserPhoneBook
         public ActionResult Index()
@@ -33,20 +38,22 @@ namespace PhoneBook.UI.Controllers
 
         // GET: UserPhoneBook/Create
         public ActionResult Create()
-        {
-            return View();
+        {            
+            return View(new UserPhonebook()
+            {
+                OwnerId = (int) UserId.Value
+            });
         }
 
         // POST: UserPhoneBook/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([FromBody] UserPhonebook phoneBook)
+        public ActionResult Create([FromForm] UserPhonebook phoneBook)
         {
             try
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                _phonebookRepository.CreatePhoneBook((int) UserId.Value, phoneBook.Name);
+                return RedirectToAction("Details","User",new { id = UserId.Value });
             }
             catch
             {

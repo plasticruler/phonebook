@@ -4,5 +4,13 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>This is a demo app showing dotnet core and some design and implementation principles.</p>
+    <ul>
+        <li>End goal - Develop a telephone book application as an SPA that uses an API for its data layer, and that uses JWT based authentication.</li>
+        <li>First Step - Develop the object model and functionality to do CRUD operations through the API, storing records in the SqlLite database.</li>
+        <li>Second Step - Using the same object model from the first step, use the repository pattern to save records locally into a memory database.</li>
+        <li>Third Step - Enable JWT authentication on the API. Enable Cookie-based authentication (with the JWT token as a claim) in the MVC app.</li>
+        <li>Fourth Step - Create a new repository implementation which calls the remote API for CRUD operations.</li>
+        <li>Fifth Step - Convert the MVC app which makes server-side API calls to one which makes the calls to the API locally, through the SPA built using React.</li>
+    </ul>
 </div>

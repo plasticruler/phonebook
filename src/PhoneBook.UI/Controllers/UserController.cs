@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using PhoneBook.UI.Infrastructure;
+using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
 using PhoneBook.UI.Models.DTO;
 
 namespace PhoneBook.UI.Controllers
 {
+    [Authorize]
     public class UserController : BaseController
     {
         IPhoneBookRepository _phoneBookRepository;
-        public UserController(IPhoneBookRepository phoneBookRepository, IConfiguration configuration):base(configuration)
+        public UserController(IPhoneBookRepository phoneBookRepository, IConfiguration configuration, 
+            IMessager messager, IHttpContextAccessor contextAccessor) :base(configuration, messager,contextAccessor)
         {
             _phoneBookRepository = phoneBookRepository;
+            
+            _phoneBookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
         }
         // GET: User
         public ActionResult Index()
