@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,12 @@ namespace PhoneBook.UI.Controllers
     {
         private readonly IPhoneBookRepository _phoneBookRepository;
 
-        public ContactController(IPhoneBookRepository phoneBookRepository, IMessager messager, 
+        public ContactController(IPhoneBookRepository phoneBookRepository, IMessager messager,
             IConfiguration configuration,
-            IHttpContextAccessor contextAccessor):base(configuration,messager, contextAccessor)
+            IHttpContextAccessor contextAccessor) : base(configuration, messager, contextAccessor)
         {
             _phoneBookRepository = phoneBookRepository;
+            _phoneBookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
         }
         // GET: Contact
         public ActionResult Index()
@@ -42,7 +44,7 @@ namespace PhoneBook.UI.Controllers
 
         // POST: Contact/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]        
+        [ValidateAntiForgeryToken]
         public ActionResult Create(int id, [FromForm] Contact contact)
         {
             if (!ModelState.IsValid)
@@ -51,9 +53,11 @@ namespace PhoneBook.UI.Controllers
             }
             try
             {
-                             
-                _phoneBookRepository.CreateContact(id, contact.FirstName, contact.Lastname,contact.PhoneNumber, (PhoneNumberType) Enum.Parse(typeof(PhoneNumberType),contact.PhoneNumberType,true));
-                return RedirectToAction(nameof(Details),"UserPhoneBook",new { id =id});
+
+                _phoneBookRepository.CreateContact(id, contact.FirstName, contact.Lastname, contact.PhoneNumber,
+                (PhoneNumberType)Enum.Parse(typeof(PhoneNumberType),
+                contact.PhoneNumberType, true));
+                return RedirectToAction(nameof(Details), "UserPhoneBook", new { id = id });
             }
             catch (Exception ex)
             {

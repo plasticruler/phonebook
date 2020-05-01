@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
 using PhoneBook.UI.Models.DTO;
@@ -15,13 +17,12 @@ namespace PhoneBook.UI.Infrastructure
         private readonly IMessager _messager;
         private string _jwtToken;
 
-        private readonly IConfiguration _configuration;
-        private string ApiUrl => GetConfigValue("ApiUrl");
+        private readonly IOptions<Appsettings> _configuration;        
 
-        public ApiPhoneBookRepository(IMessager messager, IConfiguration configuration)
+        public ApiPhoneBookRepository(IMessager messager, IOptions<Appsettings> appSettings)
         {
             _messager = messager;
-            _configuration = configuration;
+            _configuration = appSettings;            
         }
         public int CreateContact(int phoneBookId, string firstName, string surname, string phoneNumber, PhoneNumberType phoneNumberType)
         {
@@ -51,7 +52,14 @@ namespace PhoneBook.UI.Infrastructure
 
         public string CreateUser(string firstName, string surname, string password, string emailAddress)
         {
-            throw new NotImplementedException();
+            _messager.Post<UserForCreate, string>(GetRemoteUrl("Users"), new UserForCreate()
+            {
+                EmailAddress = emailAddress,
+                FirstName = firstName,
+                Password = password,
+                Surname = surname
+            }, _jwtToken);
+            return string.Empty;
         }
 
         public bool DoesUserExist(string emailAddress)
@@ -87,24 +95,16 @@ namespace PhoneBook.UI.Infrastructure
         public IEnumerable<UserModel> GetUsers()
         {
             return _messager.Get<IEnumerable<UserModel>>(GetRemoteUrl("Users"), _jwtToken).Result;
-        }
-
-        protected string GetConfigValue(string key, string defaultValue = "", bool raiseException = false)
-        {
-            string value = _configuration[$"AppSettings:{key}"];
-            if (string.IsNullOrWhiteSpace(value) && raiseException)
-                throw new ApplicationException($"Key '{key}' not found.");
-            return value ?? defaultValue;
-        }
+        }        
 
         protected string GetRemoteUrl(string url, params string[] parameters)
         {
             var p = string.Join("/", parameters);
             if (parameters.Any())
             {
-                return $"{ApiUrl}/{url}/{p}";
+                return $"{_configuration.Value.ApiUrl}/{url}/{p}";
             }
-            return $"{ApiUrl}/{url}";
+            return $"{_configuration.Value.ApiUrl}/{url}";
         }
         public AuthenticatedUser LoginUser(string emailAddress, string passwordHash)
         {

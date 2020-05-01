@@ -105,7 +105,7 @@ namespace PhoneBook.API.Controllers
                 PhoneBookId = contactForCreate.PhoneBookId
             };
             _context.Contacts.Add(contact);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             _context.TelephoneNumber.Add(new TelephoneNumber()
             {

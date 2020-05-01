@@ -2,15 +2,35 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>This is a demo app showing dotnet core and some design and implementation principles.</p>
-    <ul>
-        <li>End goal - Develop a telephone book application as an SPA that uses an API for its data layer, and that uses JWT based authentication.</li>
-        <li>First Step - Develop the object model and functionality to do CRUD operations through the API, storing records in the SqlLite database.</li>
-        <li>Second Step - Using the same object model from the first step, use the repository pattern to save records locally into a memory database.</li>
-        <li>Third Step - Enable JWT authentication on the API. Enable Cookie-based authentication (with the JWT token as a claim) in the MVC app.</li>
-        <li>Fourth Step - Create a new repository implementation which calls the remote API for CRUD operations.</li>
-        <li>Fifth Step - Convert the MVC app which makes server-side API calls to one which makes the calls to the API locally, through the SPA built using React.</li>
-    </ul>
-</div>
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">Whats' this about?</h1>
+            <h2 class="subtitle">
+                This is a demo app showing dotnet core and some design and implementation principles.
+            </h2>
+        </div>
+    </div>
+</section>        
+<section>
+    <div class="container">
+    <h3 class="title">End goal</h3>
+    <h4 class="subtitle">Develop a telephone book application as an SPA that uses an API for its data layer, and that uses JWT based authentication.</h4>              
+    
+    <h3 class="title">First Step</h3>
+    <h4 class="subtitle">Develop the object model and functionality to do CRUD operations through the API, storing records in the SqlLite database.</h4>
+
+    <h3 class="title">Second Step</h3>
+    <h4 class="subtitle">Using the same object model from the first step, use the repository pattern to save records locally into a memory database.</h4>
+
+    <h3 class="title">Third Step</h3>
+    <h4 class="subtitle">Enable JWT authentication on the API. Enable Cookie-based authentication (with the JWT token as a claim) in the MVC app.</h4>
+
+    <h3 class="title">Fourth Step</h3>
+    <h4 class="subtitle">Create a new repository implementation which calls the remote API for CRUD operations.</h4>
+
+    <h3 class="title">Fifth Step</h3>
+    <h4 class="subtitle">Convert the MVC app which makes server-side API calls to one which makes the calls to the API locally, through the SPA built using React.</h4>    
+    
+    </div>
+</section>

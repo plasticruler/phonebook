@@ -4,21 +4,22 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details for PhoneBook - @Html.DisplayFor(model=>model.Name)</h1>
+<h1 class="title">Contacts in PhoneBook - @Html.DisplayFor(model=>model.Name)</h1>
 
 <p>
-    <a asp-action="Create">New PhoneBook</a> |
-    <a asp-action="Create" asp-controller="Contact" asp-route-id="@Model.Id">New Contact</a>
+    <a asp-action="Create" class="button is-small">New PhoneBook</a> |
+    <a asp-action="Create" class="button is-small" asp-controller="Contact" asp-route-id="@Model.Id">New Contact</a>
+    <a asp-action="Details" class="button is-small" asp-controller="User" asp-route-id="@Model.OwnerId">Back to PhoneBooks</a>
 </p>
 
-<table class="table">
+<table class="table is-striped is-hoverable">
     <thead>
         <tr>           
             <th>
                 @Html.DisplayNameFor(model => model.Name)
-            </th>
-        
+            </th>        
             <th></th>
+            <th></th>            
         </tr>
     </thead>
     <tbody>
@@ -31,9 +32,9 @@
                 @Html.DisplayFor(modelItem => item.Lastname)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit","Contact", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", "Contact", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", "Contact", new { id = item.Id })
+                @Html.ActionLink("Edit", "Edit","Contact", new { id=item.Id }, new {@class="button is-small"} ) |
+                @Html.ActionLink("Details", "Details", "Contact", new { id = item.Id }, new {@class="button is-small"}) |
+                @Html.ActionLink("Delete", "Delete", "Contact", new { id = item.Id }, new {@class="button is-small is-danger"})
             </td>
         </tr>}
     </tbody>

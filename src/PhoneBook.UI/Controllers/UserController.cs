@@ -58,11 +58,11 @@ namespace PhoneBook.UI.Controllers
             try
             {
                 _phoneBookRepository.CreateUser(userModel.FirstName, userModel.Surname, userModel.Password, userModel.EmailAddress);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View(nameof(Index));
+                return View();
             }
         }
 

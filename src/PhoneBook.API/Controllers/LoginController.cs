@@ -27,7 +27,7 @@ namespace PhoneBook.API.Controllers
         [HttpPost]       
         public IActionResult Login([FromBody] UserForAuthentication<long> login)
         {
-            IActionResult response = Unauthorized();
+            IActionResult response = Unauthorized("Invalid username or password.");
             var user = AuthenticateUser(login);
 
             if (user != null)
