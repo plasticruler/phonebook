@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1 class="title">Edit Phonebook @Model.Name</h1>
+<h1 class="title">Edit Phonebook</h1>
 
 <hr />
 <div class="container">
@@ -12,7 +12,7 @@
         <div class="column is-5-tablet is-4-desktop is-3-widespread">            
             <form class="box" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="help is-danger"></div>
-            @Html.HiddenFor(x => x.OwnerId)
+            @Html.HiddenFor(x => x.UserId)
             <div class="field">
                 <label asp-for="Name" class="label"></label>
                 <input asp-for="Name" class="control" />

@@ -62,7 +62,13 @@ namespace PhoneBook.API.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(userPhoneBook).State = EntityState.Modified;
+            var original = _context.PhoneBook.Find(id);
+            if (original == null || original.UserId != UserId){
+                return NotFound();
+            }
+            original.Name = userPhoneBook.Name; //only allow update of the name
+            
+            _context.Entry(original).State = EntityState.Modified;
 
             try
             {

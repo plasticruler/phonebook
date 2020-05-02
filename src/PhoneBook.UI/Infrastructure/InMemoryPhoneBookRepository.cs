@@ -35,14 +35,14 @@ namespace PhoneBook.UI.Infrastructure
             throw new NotImplementedException();
         }
 
-        public UserModel GetUser(int id)
+        public UserModel GetUser(long id)
         {
             return _users.FirstOrDefault(x => x.Id == id);
         }
 
         public IEnumerable<UserPhonebook> GetUserPhoneBooks(int userId)
         {
-            return _phoneBooks.Where(x => x.OwnerId == userId);
+            return _phoneBooks.Where(x => x.UserId == userId);
         }
 
         public IEnumerable<UserModel> GetUsers()
@@ -146,8 +146,8 @@ namespace PhoneBook.UI.Infrastructure
                 var phoneBookId = x.Id * 1000;
                 _phoneBooks.Add(new UserPhonebook()
                 {
-                    Owner = x,
-                    OwnerId = x.Id,
+                    User = x,
+                    UserId = x.Id,
                     Name = GetPhoneBookName(x),
                     Id = phoneBookId //add a phoneBook
                 });
@@ -158,7 +158,7 @@ namespace PhoneBook.UI.Infrastructure
             );
             _phoneBooks.ForEach(p =>
             {
-                var user = GetUser(p.OwnerId);
+                var user = GetUser(p.UserId);
                 user.PhoneBooks = new List<UserPhonebook>() { p };
             });
         }
@@ -226,6 +226,11 @@ namespace PhoneBook.UI.Infrastructure
         }
 
         public UserPhonebook CreatePhoneBook(int userId, string phoneBookName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserPhonebook UpdateUserPhoneBook(UserPhonebook phoneBook)
         {
             throw new NotImplementedException();
         }

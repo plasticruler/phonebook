@@ -11,8 +11,8 @@ namespace PhoneBook.UI.Models
         {
             Contacts = new List<Contact>();
         }
-        public int OwnerId { get; set; }
-        public UserModel Owner { get; set; }
+        public long UserId { get; set; }
+        public UserModel User { get; set; }
         public string Name { get; set; }
         public List<Contact> Contacts { get; set; }
     }

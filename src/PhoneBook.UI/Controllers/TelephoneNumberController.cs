@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using PhoneBook.UI.Infrastructure;
+using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
 
 namespace PhoneBook.UI.Controllers
 {
-    public class TelephoneNumberController : Controller
+    public class TelephoneNumberController : BaseController
     {
         private readonly IPhoneBookRepository _phoneBookRepository;
 
-        public TelephoneNumberController(IPhoneBookRepository phoneBookRepository)
-        {
+        public TelephoneNumberController(IPhoneBookRepository phoneBookRepository, 
+                                    IMessager messager,
+                                    IConfiguration configuration,
+                                    IHttpContextAccessor contextAccessor): base(configuration, messager, contextAccessor)
+        {            
             _phoneBookRepository = phoneBookRepository;
+            _phoneBookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
         }
         // GET: TelephoneNumber
         public ActionResult Index()

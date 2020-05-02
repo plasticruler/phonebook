@@ -41,7 +41,7 @@ namespace PhoneBook.UI.Controllers
         {            
             return View(new UserPhonebook()
             {
-                OwnerId = (int) UserId.Value
+                UserId = (int) UserId.Value
             });
         }
 
@@ -64,19 +64,22 @@ namespace PhoneBook.UI.Controllers
         // GET: UserPhoneBook/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var phoneBook = _phonebookRepository.GetPhoneBook(id);
+            
+            return View(phoneBook);
         }
 
         // POST: UserPhoneBook/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, [FromForm] UserPhonebook phoneBook)
         {
             try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+            {                
+                phoneBook.UserId = UserId.Value;
+                phoneBook.Id = id;
+                _phonebookRepository.UpdateUserPhoneBook(phoneBook);
+                return RedirectToAction("Details", "User", new {id=id});
             }
             catch
             {

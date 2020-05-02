@@ -18,9 +18,10 @@ namespace PhoneBook.UI.Infrastructure
 
         bool DoesUserExist(string emailAddress);
        public IEnumerable<UserModel> GetUsers();
-       public UserModel GetUser(int id);
+       public UserModel GetUser(long id);
        public IEnumerable<UserPhonebook> GetUserPhoneBooks(int userId);
         public UserPhonebook GetPhoneBook(int id);
+        public UserPhonebook UpdateUserPhoneBook(UserPhonebook phoneBook);
         public Contact GetContact(int id);
         public TelephoneNumber GetTelephoneNumber(int id);
         void SetAuthKey(string jwtToken);

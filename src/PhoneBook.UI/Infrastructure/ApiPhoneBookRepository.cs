@@ -82,7 +82,7 @@ namespace PhoneBook.UI.Infrastructure
             return _messager.Get<TelephoneNumber>(GetRemoteUrl("Telephone", id.ToString()), _jwtToken).Result;
         }
 
-        public UserModel GetUser(int id)
+        public UserModel GetUser(long id)
         {
             return _messager.Get<UserModel>(GetRemoteUrl("Users", id.ToString()), _jwtToken).Result;
         }
@@ -132,6 +132,12 @@ namespace PhoneBook.UI.Infrastructure
                 },
                 _jwtToken).Result;
             return result;
+        }
+
+        public UserPhonebook UpdateUserPhoneBook(UserPhonebook phoneBook)
+        {
+            return _messager.Put<UserPhonebook, UserPhonebook>(GetRemoteUrl("PhoneBook", phoneBook.Id.ToString()),
+                        phoneBook, _jwtToken).Result;
         }
     }
 }

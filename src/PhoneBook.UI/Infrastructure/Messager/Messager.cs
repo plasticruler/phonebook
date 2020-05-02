@@ -43,10 +43,17 @@ namespace PhoneBook.UI.Infrastructure.Messager
                 }
             }            
         }
-
-        public async Task<R> Post<T, R>(string url, T payload, string jwtToken = null, params string[] parameters)
+        public async Task<R> Put<T, R>(string url, T payload, string jwtToken = null)
         {
-            R result = default(R);
+            return await Process<T, R>("PUT", url, payload, jwtToken);            
+        }
+        
+        public async Task<R> Post<T, R>(string url, T payload, string jwtToken = null)
+        {
+            return await Process<T, R>("POST", url, payload, jwtToken);            
+        }
+        public async Task<R> Process<T, R>(string verb, string url, T payload, string jwtToken = null){
+                R result = default(R);
             var json = JsonConvert.SerializeObject(payload); 
             var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
             using (var handler = new HttpClientHandler())
@@ -55,7 +62,20 @@ namespace PhoneBook.UI.Infrastructure.Messager
                 using (var client = new HttpClient(handler))
                 {
                     SetHeaders(client, jwtToken);
-                    HttpResponseMessage response = await client.PostAsync(url, stringContent);
+
+                    HttpResponseMessage response;
+                    if (verb == "POST")
+                    {
+                        response = await client.PostAsync(url, stringContent);
+                    }
+                    else if(verb== "PUT"){
+                        response = await client.PutAsync(url, stringContent);
+                    }
+                    else{
+                        throw new Exception($"Unsupported verb '{verb}'.");
+                    }
+                     
+                    
                     if (response.IsSuccessStatusCode)
                     {
                         var str = await response.Content.ReadAsStringAsync();
@@ -69,7 +89,6 @@ namespace PhoneBook.UI.Infrastructure.Messager
                 }
             }
         }
-
         private void SetHeaders(HttpClient client, string jwtToken = null)
         {
             client.DefaultRequestHeaders.Accept.Clear();
