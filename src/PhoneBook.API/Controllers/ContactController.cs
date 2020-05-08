@@ -56,6 +56,11 @@ namespace PhoneBook.API.Controllers
             {
                 return BadRequest();
             }
+            var cnt = _context.Contacts.Find(contact.Id);
+            if (cnt==null || cnt.PhoneBook.UserId != UserId){
+                return NotFound("Contact not found or user invalid."); 
+            }
+            
 
             _context.Entry(contact).State = EntityState.Modified;
 
@@ -85,8 +90,10 @@ namespace PhoneBook.API.Controllers
         public async Task<ActionResult<Contact>> PostContact(Contact contact)
         {
             var pb = _context.PhoneBook.Find(contact.PhoneBookId);
+
             if (pb == null || pb.UserId != UserId)
                 return NotFound("PhoneBook not found or user invalid.");
+
             _context.Contacts.Add(contact);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetContact", new { id = contact.Id }, contact);

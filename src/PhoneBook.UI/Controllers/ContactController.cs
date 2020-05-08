@@ -68,18 +68,19 @@ namespace PhoneBook.UI.Controllers
         // GET: Contact/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var contact = _phoneBookRepository.GetContact(id);
+            return View(contact);
         }
 
         // POST: Contact/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, [FromForm] Contact contact)
         {
             try
             {
                 // TODO: Add update logic here
-
+                
                 return RedirectToAction(nameof(Index));
             }
             catch

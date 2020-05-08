@@ -71,7 +71,7 @@ namespace PhoneBook.API
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                    };
+                    };                    
                 });
         }
 

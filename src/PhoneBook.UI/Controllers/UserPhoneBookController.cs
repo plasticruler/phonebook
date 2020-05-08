@@ -50,7 +50,7 @@ namespace PhoneBook.UI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([FromForm] UserPhonebook phoneBook)
         {
-            try
+            try 
             {
                 _phonebookRepository.CreatePhoneBook((int) UserId.Value, phoneBook.Name);
                 return RedirectToAction("Details","User",new { id = UserId.Value });

@@ -1,7 +1,7 @@
 @model PhoneBook.UI.Models.Contact
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
 <h1 class="title">Edit Contact</h1>
@@ -20,23 +20,9 @@
                 <label asp-for="Lastname" class="label"></label>
                 <input asp-for="Lastname" class="control" />
                 <span asp-validation-for="Lastname" class="help is-danger"></span>
-            </div>
+            </div>            
             <div class="field">
-                <label asp-for="PhoneNumber" class="label"></label>
-                <input asp-for="PhoneNumber" class="control" />
-                <span asp-validation-for="PhoneNumber" class="help is-danger"></span>
-            </div>
-            <div class="field">
-                <label asp-for="PhoneNumberType" class="label"></label>
-                <div class="select">
-                <select asp-for="PhoneNumberType" asp-items="@Html.GetEnumSelectList<PhoneNumberType>()" class="form-control">
-                    <option selected="selected" value="">Please select</option>
-                </select>
-                </div>                
-                <span asp-validation-for="PhoneNumberType" class="help is-danger"></span>
-            </div>
-            <div class="field">
-                <input type="submit" value="Edit" class="button is-primary" />
+                <input type="submit" value="Save" class="button is-primary" />
             </div>
         </form>
         </div>        
