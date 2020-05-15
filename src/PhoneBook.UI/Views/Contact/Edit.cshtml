@@ -1,0 +1,40 @@
+@model PhoneBook.UI.Models.Contact
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1 class="title">Edit Contact</h1>
+<hr />
+<div class="container">
+    <div class="columns is-left">
+        <div class="column is-5-tablet is-4-desktop is-3-widespread">
+            <form asp-action="Edit" class="box">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @Html.HiddenFor(x => x.Id)
+                @Html.HiddenFor(x => x.PhoneBookId)
+                <div class="field">
+                    <label asp-for="FirstName" class="label"></label>
+                    <input asp-for="FirstName" class="control" />
+                    <span asp-validation-for="FirstName" class="help is-danger"></span>
+                </div>
+                <div class="field">
+                    <label asp-for="Lastname" class="label"></label>
+                    <input asp-for="Lastname" class="control" />
+                    <span asp-validation-for="Lastname" class="help is-danger"></span>
+                </div>
+                <div class="field">
+                    <input type="submit" value="Save" class="button is-primary" />
+                </div>
+            </form>
+        </div>        
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

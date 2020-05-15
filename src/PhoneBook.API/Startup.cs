@@ -57,6 +57,8 @@ namespace PhoneBook.API
                 
             });
             services.Configure<JwtOptions>(Configuration.GetSection("Jwt"));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            
             //add jwt
             services.AddAuthentication(x=>
             {
@@ -69,9 +71,9 @@ namespace PhoneBook.API
                     {
                         ValidateIssuerSigningKey = true,
                         ValidateIssuer = false,
-                        ValidateAudience = false,
+                        ValidateAudience = false,                        
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                    };
+                    };                    
                 });
         }
 

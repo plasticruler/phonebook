@@ -1,21 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
+using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
 
 namespace PhoneBook.UI.Controllers
 {
-    public class TelephoneNumberController : Controller
+    public class TelephoneNumberController : BaseController
     {
         private readonly IPhoneBookRepository _phoneBookRepository;
 
-        public TelephoneNumberController(IPhoneBookRepository phoneBookRepository)
-        {
+        public TelephoneNumberController(IPhoneBookRepository phoneBookRepository, 
+                                    IMessager messager,
+                                   IOptionsSnapshot<AppSettings> appSettings,
+                                    IHttpContextAccessor contextAccessor): base(appSettings, messager, contextAccessor)
+        {            
             _phoneBookRepository = phoneBookRepository;
+            _phoneBookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
         }
         // GET: TelephoneNumber
         public ActionResult Index()
@@ -69,6 +78,7 @@ namespace PhoneBook.UI.Controllers
                 var n = _phoneBookRepository.GetTelephoneNumber(telephoneNumber.Id);
                 n.Number = telephoneNumber.Number;
                 n.NumberType = telephoneNumber.NumberType;
+                _phoneBookRepository.UpdateTelephoneNumber(n);                
                 return RedirectToAction("Details","Contact", new { id = n.ContactId });
             }
             catch (Exception ex)

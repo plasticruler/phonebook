@@ -8,26 +8,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PhoneBook.API.Models;
 using PhoneBook.API.Models.DTO;
+using PhoneBook.API.Options;
 
 namespace PhoneBook.API.Controllers
 {   
     public class LoginController : BaseController
     {
-        private IConfiguration _config;
-        private readonly AppDbContext _context;      
-        public LoginController(IConfiguration config, AppDbContext context)
+        private readonly IOptionsSnapshot<AppSettings> _appSettings;
+        private readonly AppDbContext _context;
+        private readonly IOptionsSnapshot<JwtOptions> _jwtOptions;
+
+        public LoginController(IOptionsSnapshot<AppSettings> appSettings, AppDbContext context,
+                                IOptionsSnapshot<JwtOptions> jwtOptions)
         {
-            _config = config;
             _context = context;
+            _appSettings = appSettings;
+            _jwtOptions = jwtOptions;
         }
         [AllowAnonymous]
         [HttpPost]       
         public IActionResult Login([FromBody] UserForAuthentication<long> login)
         {
-            IActionResult response = Unauthorized();
+            IActionResult response = Unauthorized("Invalid username or password.");
             var user = AuthenticateUser(login);
 
             if (user != null)
@@ -60,13 +66,13 @@ namespace PhoneBook.API.Controllers
         }
         private string GenerateJSONWebToken(UserForAuthentication<long> userInfo)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Value.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
            
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Issuer"],
+            var token = new JwtSecurityToken(_jwtOptions.Value.Issuer,
+              _jwtOptions.Value.Issuer,
               GetClaims(userInfo),
-              expires: DateTime.Now.AddMinutes(120),
+              expires: DateTime.Now.AddHours(_appSettings.Value.TokenTimeOutInHours),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

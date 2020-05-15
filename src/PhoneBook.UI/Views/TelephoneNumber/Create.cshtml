@@ -4,29 +4,29 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Add Number</h1>
 
-<h4>TelephoneNumber</h4>
 <hr />
-<div class="row">
+<div class="container">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <div class="column is-5-tablet is-4-desktop is-3-widespread">            
+            <form class="box" asp-action="Create" asp-antiforgery="true">
             @Html.HiddenFor(x => x.ContactId);
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Number" class="control-label"></label>
-                <input asp-for="Number" class="form-control" />
+            <div asp-validation-summary="ModelOnly" class="help is-danger"></div>
+            <div class="field">
+                <label asp-for="Number" class="label"></label>
+                <input asp-for="Number" class="control" />
                 <span asp-validation-for="Number" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="NumberType" class="control-label"></label>
-                <select asp-for="NumberType" asp-items="@Html.GetEnumSelectList<PhoneNumberType>()" class="form-control">
+            <div class="field">
+                <label asp-for="NumberType" class="label"></label>
+                <select asp-for="NumberType" asp-items="@Html.GetEnumSelectList<PhoneNumberType>()" class="select">
                     <option selected="selected" value="">Please select</option>
                 </select>
-                <span asp-validation-for="NumberType" class="text-danger"></span>
+                <span asp-validation-for="NumberType" class="help is-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="field">
+                <input type="submit" value="Create" class="button is-primary" />
             </div>
         </form>
     </div>

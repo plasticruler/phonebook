@@ -18,11 +18,14 @@ namespace PhoneBook.UI.Infrastructure
 
         bool DoesUserExist(string emailAddress);
        public IEnumerable<UserModel> GetUsers();
-       public UserModel GetUser(int id);
+       public UserModel GetUser(long id);
        public IEnumerable<UserPhonebook> GetUserPhoneBooks(int userId);
         public UserPhonebook GetPhoneBook(int id);
+        public UserPhonebook UpdateUserPhoneBook(UserPhonebook phoneBook);
         public Contact GetContact(int id);
+        public Contact UpdateContact(Contact contact);
         public TelephoneNumber GetTelephoneNumber(int id);
+        public TelephoneNumber UpdateTelephoneNumber(TelephoneNumber telephoneNumber);
         void SetAuthKey(string jwtToken);
     }
 }

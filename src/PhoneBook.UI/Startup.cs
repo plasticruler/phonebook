@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
 using PhoneBook.UI.Infrastructure.Messager;
 
@@ -31,9 +33,11 @@ namespace PhoneBook.UI
             services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
             services.AddHttpContextAccessor();
-            services.AddScoped<IMessager>(c=>new Messager(Configuration));
-            services.AddScoped<IPhoneBookRepository>(c => new ApiPhoneBookRepository(c.GetService<IMessager>(), 
-                Configuration));            
+            services.AddScoped<IMessager>(c=>new Messager(Configuration));            
+            
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            
+            services.AddScoped<IPhoneBookRepository>(c => new ApiPhoneBookRepository(c.GetService<IMessager>(),c.GetService<IOptions<AppSettings>>()));            
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

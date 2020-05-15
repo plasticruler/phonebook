@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
+using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
 
 namespace PhoneBook.UI.Controllers
@@ -16,8 +19,9 @@ namespace PhoneBook.UI.Controllers
     {
         private readonly IPhoneBookRepository _phonebookRepository;
 
-        public UserPhonebookController(IPhoneBookRepository phonebookRepository, IConfiguration configuration,
-            Infrastructure.Messager.IMessager messager, IHttpContextAccessor contextAccessor) : base(configuration, messager, contextAccessor)
+        public UserPhonebookController(IPhoneBookRepository phonebookRepository,
+            IOptionsSnapshot<AppSettings> appSettings, IMessager messager, 
+            IHttpContextAccessor contextAccessor) : base(appSettings, messager, contextAccessor)
         {
             _phonebookRepository = phonebookRepository;
             _phonebookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
@@ -41,7 +45,7 @@ namespace PhoneBook.UI.Controllers
         {            
             return View(new UserPhonebook()
             {
-                OwnerId = (int) UserId.Value
+                UserId = (int) UserId.Value
             });
         }
 
@@ -50,7 +54,7 @@ namespace PhoneBook.UI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([FromForm] UserPhonebook phoneBook)
         {
-            try
+            try 
             {
                 _phonebookRepository.CreatePhoneBook((int) UserId.Value, phoneBook.Name);
                 return RedirectToAction("Details","User",new { id = UserId.Value });
@@ -64,19 +68,22 @@ namespace PhoneBook.UI.Controllers
         // GET: UserPhoneBook/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var phoneBook = _phonebookRepository.GetPhoneBook(id);
+            
+            return View(phoneBook);
         }
 
         // POST: UserPhoneBook/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, [FromForm] UserPhonebook phoneBook)
         {
             try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+            {                
+                phoneBook.UserId = UserId.Value;
+                phoneBook.Id = id;
+                _phonebookRepository.UpdateUserPhoneBook(phoneBook);
+                return RedirectToAction("Details", "User", new {id=id});
             }
             catch
             {

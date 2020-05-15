@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
 using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
@@ -15,11 +18,12 @@ namespace PhoneBook.UI.Controllers
     {
         private readonly IPhoneBookRepository _phoneBookRepository;
 
-        public ContactController(IPhoneBookRepository phoneBookRepository, IMessager messager, 
-            IConfiguration configuration,
-            IHttpContextAccessor contextAccessor):base(configuration,messager, contextAccessor)
+        public ContactController(IPhoneBookRepository phoneBookRepository, IMessager messager,
+            IOptionsSnapshot<AppSettings> appSettings,
+            IHttpContextAccessor contextAccessor) : base(appSettings, messager, contextAccessor)
         {
             _phoneBookRepository = phoneBookRepository;
+            _phoneBookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
         }
         // GET: Contact
         public ActionResult Index()
@@ -42,7 +46,7 @@ namespace PhoneBook.UI.Controllers
 
         // POST: Contact/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]        
+        [ValidateAntiForgeryToken]
         public ActionResult Create(int id, [FromForm] Contact contact)
         {
             if (!ModelState.IsValid)
@@ -51,9 +55,11 @@ namespace PhoneBook.UI.Controllers
             }
             try
             {
-                             
-                _phoneBookRepository.CreateContact(id, contact.FirstName, contact.Lastname,contact.PhoneNumber, (PhoneNumberType) Enum.Parse(typeof(PhoneNumberType),contact.PhoneNumberType,true));
-                return RedirectToAction(nameof(Details),"UserPhoneBook",new { id =id});
+
+                _phoneBookRepository.CreateContact(id, contact.FirstName, contact.Lastname, contact.PhoneNumber,
+                (PhoneNumberType)Enum.Parse(typeof(PhoneNumberType),
+                contact.PhoneNumberType, true));
+                return RedirectToAction(nameof(Details), "UserPhoneBook", new { id = id });
             }
             catch (Exception ex)
             {
@@ -64,19 +70,19 @@ namespace PhoneBook.UI.Controllers
         // GET: Contact/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var contact = _phoneBookRepository.GetContact(id);
+            return View(contact);
         }
 
         // POST: Contact/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, [FromForm] Contact contact)
         {
             try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+            {               
+                _phoneBookRepository.UpdateContact(contact);
+                return RedirectToAction("Details", "Contact", new { id = id });
             }
             catch
             {

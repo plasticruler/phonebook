@@ -1,16 +1,16 @@
-﻿@model PhoneBook.UI.Models.UserPhonebook
+@model PhoneBook.UI.Models.UserPhonebook
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1 class="title">Create new Phonebook</h1>
+<h1 class="title">Edit Phonebook</h1>
 
 <hr />
 <div class="container">
     <div class="columns is-left">
         <div class="column is-5-tablet is-4-desktop is-3-widespread">            
-            <form class="box" asp-action="Create">
+            <form class="box" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="help is-danger"></div>
             @Html.HiddenFor(x => x.UserId)
             <div class="field">
@@ -20,7 +20,8 @@
             </div>
 
             <div class="field">
-                <input type="submit" value="Create" class="button is-primary" />
+                <input type="submit" value="Save" class="button is-primary" />
+                <button type="submit" value="Cancel" class="button"/>
             </div>
         </form>
         </div>        
