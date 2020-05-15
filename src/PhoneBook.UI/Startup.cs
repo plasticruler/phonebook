@@ -35,9 +35,9 @@ namespace PhoneBook.UI
             services.AddHttpContextAccessor();
             services.AddScoped<IMessager>(c=>new Messager(Configuration));            
             
-            services.Configure<Appsettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             
-            services.AddScoped<IPhoneBookRepository>(c => new ApiPhoneBookRepository(c.GetService<IMessager>(),c.GetService<IOptions<Appsettings>>()));            
+            services.AddScoped<IPhoneBookRepository>(c => new ApiPhoneBookRepository(c.GetService<IMessager>(),c.GetService<IOptions<AppSettings>>()));            
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

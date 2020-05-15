@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure.Messager;
 using System;
 using System.Collections.Generic;
@@ -14,12 +16,13 @@ namespace PhoneBook.UI.Controllers
 {
     public class BaseController:Controller
     {
-        protected readonly IConfiguration _configuration;
+        protected readonly IOptionsSnapshot<AppSettings> _appSettings;
+
         protected readonly IMessager _messager;
         protected readonly IHttpContextAccessor _contextAccessor;
-        public BaseController(IConfiguration configuration, IMessager messager, IHttpContextAccessor contextAccessor)
+        public BaseController(IOptionsSnapshot<AppSettings> appSettings, IMessager messager, IHttpContextAccessor contextAccessor)
         {
-            _configuration = configuration;
+            _appSettings = appSettings;
             _messager = messager;
             _contextAccessor = contextAccessor;            
         }

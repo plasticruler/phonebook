@@ -234,5 +234,15 @@ namespace PhoneBook.UI.Infrastructure
         {
             throw new NotImplementedException();
         }
+
+        public Contact UpdateContact(Contact contact)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TelephoneNumber UpdateTelephoneNumber(TelephoneNumber telephoneNumber)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

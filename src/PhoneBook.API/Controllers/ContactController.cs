@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PhoneBook.API.Models;
 using PhoneBook.API.Models.DTO;
+using PhoneBook.API.Options;
 
 namespace PhoneBook.API.Controllers
 {
@@ -18,9 +20,12 @@ namespace PhoneBook.API.Controllers
     {
         private readonly AppDbContext _context;
 
-        public ContactController(AppDbContext context)
+        public IOptionsSnapshot<AppSettings> _appSettings { get; }
+
+        public ContactController(AppDbContext context, IOptionsSnapshot<AppSettings> appSettings)
         {
             _context = context;
+            _appSettings = appSettings;
         }
 
         // GET: api/Contact
@@ -56,16 +61,19 @@ namespace PhoneBook.API.Controllers
             {
                 return BadRequest();
             }
-            var cnt = _context.Contacts.Find(contact.Id);
-            if (cnt==null || cnt.PhoneBook.UserId != UserId){
-                return NotFound("Contact not found or user invalid."); 
-            }
+            
             
 
             _context.Entry(contact).State = EntityState.Modified;
 
             try
             {
+                var cnt = _context.Contacts.Find(contact.Id);
+                var pb = _context.PhoneBook.Find(contact.PhoneBookId);
+                if (cnt == null || pb.UserId != UserId)
+                {
+                    return NotFound("Contact not found or user invalid.");
+                }
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -79,7 +87,6 @@ namespace PhoneBook.API.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
 

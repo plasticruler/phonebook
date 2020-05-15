@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
 using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
@@ -21,10 +23,10 @@ namespace PhoneBook.UI.Controllers
     {
         private readonly IPhoneBookRepository _repository;
 
-        public LoginController(IPhoneBookRepository repository, IConfiguration configuration, 
-            IMessager messager, IHttpContextAccessor contextAccessor) :base(configuration, messager, contextAccessor)
+        public LoginController(IPhoneBookRepository repository, IOptionsSnapshot<AppSettings> appSettings, 
+            IMessager messager, IHttpContextAccessor contextAccessor) :base(appSettings, messager, contextAccessor)
         {
-            _repository = repository;         
+            _repository = repository;   
         }
 
         [HttpGet]
@@ -57,7 +59,13 @@ namespace PhoneBook.UI.Controllers
                 identity.AddClaim(new Claim(ClaimTypes.Sid, authenticatedUser.JsonToken));
                 identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, authenticatedUser.Id.ToString()));
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
+                    new ClaimsPrincipal(identity),
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = loginModel.RememberMe,
+                        ExpiresUtc = DateTime.UtcNow.AddHours(_appSettings.Value.TokenTimeOutInHours)
+                    });
                 return RedirectToLocal(returnUrl);
             }
             else

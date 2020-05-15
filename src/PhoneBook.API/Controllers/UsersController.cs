@@ -15,7 +15,7 @@ namespace PhoneBook.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -28,7 +28,6 @@ namespace PhoneBook.API.Controllers
 
         // GET: api/Users
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
@@ -36,7 +35,6 @@ namespace PhoneBook.API.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<User>> GetUser(long id)
         {
             var user = await _context.Users
@@ -55,7 +53,6 @@ namespace PhoneBook.API.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<IActionResult> PutUser(long id, User user)
         {
             if (id != user.Id)
@@ -107,7 +104,6 @@ namespace PhoneBook.API.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<ActionResult<User>> DeleteUser(long id)
         {
             var user = await _context.Users.FindAsync(id);

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
 using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
@@ -18,8 +20,8 @@ namespace PhoneBook.UI.Controllers
     public class UserController : BaseController
     {
         IPhoneBookRepository _phoneBookRepository;
-        public UserController(IPhoneBookRepository phoneBookRepository, IConfiguration configuration, 
-            IMessager messager, IHttpContextAccessor contextAccessor) :base(configuration, messager,contextAccessor)
+        public UserController(IPhoneBookRepository phoneBookRepository, IOptionsSnapshot<AppSettings> appSettings, 
+            IMessager messager, IHttpContextAccessor contextAccessor) :base(appSettings, messager,contextAccessor)
         {
             _phoneBookRepository = phoneBookRepository;
             

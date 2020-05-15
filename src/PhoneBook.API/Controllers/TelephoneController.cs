@@ -55,11 +55,25 @@ namespace PhoneBook.API.Controllers
             {
                 return BadRequest();
             }
+            
+            var contact = _context.Contacts.Find(telephoneNumber.ContactId);
+            if (contact == null)
+                return NotFound("Contact not found.");
+            
+            var pb = _context.PhoneBook.Find(contact.PhoneBookId);
+            if (pb == null)
+                return NotFound("Phonebook not found.");
 
-            _context.Entry(telephoneNumber).State = EntityState.Modified;
+            if (pb.UserId != UserId)
+                return NotFound("Invalid PhoneBook for update.");
 
             try
             {
+                var numberToChange = _context.TelephoneNumber.Find(id);
+                numberToChange.Number = telephoneNumber.Number;
+                numberToChange.NumberType = telephoneNumber.NumberType;
+
+                _context.Entry(numberToChange).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

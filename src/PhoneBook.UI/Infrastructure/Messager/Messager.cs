@@ -54,8 +54,10 @@ namespace PhoneBook.UI.Infrastructure.Messager
         }
         public async Task<R> Process<T, R>(string verb, string url, T payload, string jwtToken = null){
                 R result = default(R);
+            
             var json = JsonConvert.SerializeObject(payload); 
             var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            
             using (var handler = new HttpClientHandler())
             {
                 handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
@@ -70,6 +72,9 @@ namespace PhoneBook.UI.Infrastructure.Messager
                     }
                     else if(verb== "PUT"){
                         response = await client.PutAsync(url, stringContent);
+                    }
+                    else if(verb == "DELETE"){
+                        response = await client.DeleteAsync(url);
                     }
                     else{
                         throw new Exception($"Unsupported verb '{verb}'.");

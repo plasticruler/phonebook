@@ -17,9 +17,9 @@ namespace PhoneBook.UI.Infrastructure
         private readonly IMessager _messager;
         private string _jwtToken;
 
-        private readonly IOptions<Appsettings> _configuration;        
+        private readonly IOptions<AppSettings> _configuration;        
 
-        public ApiPhoneBookRepository(IMessager messager, IOptions<Appsettings> appSettings)
+        public ApiPhoneBookRepository(IMessager messager, IOptions<AppSettings> appSettings)
         {
             _messager = messager;
             _configuration = appSettings;            
@@ -138,6 +138,18 @@ namespace PhoneBook.UI.Infrastructure
         {
             return _messager.Put<UserPhonebook, UserPhonebook>(GetRemoteUrl("PhoneBook", phoneBook.Id.ToString()),
                         phoneBook, _jwtToken).Result;
+        }
+
+        public Contact UpdateContact(Contact contact)
+        {
+            return _messager.Put<Contact, Contact>(GetRemoteUrl("Contact", contact.Id.ToString()),
+                      contact, _jwtToken).Result;
+        }
+
+        public TelephoneNumber UpdateTelephoneNumber(TelephoneNumber telephoneNumber)
+        {
+            return _messager.Put<TelephoneNumber, TelephoneNumber>(GetRemoteUrl("Telephone", telephoneNumber.Id.ToString()),
+                telephoneNumber, _jwtToken).Result;
         }
     }
 }

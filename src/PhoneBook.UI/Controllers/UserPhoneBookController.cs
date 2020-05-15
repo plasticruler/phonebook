@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
+using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
 
 namespace PhoneBook.UI.Controllers
@@ -16,8 +19,9 @@ namespace PhoneBook.UI.Controllers
     {
         private readonly IPhoneBookRepository _phonebookRepository;
 
-        public UserPhonebookController(IPhoneBookRepository phonebookRepository, IConfiguration configuration,
-            Infrastructure.Messager.IMessager messager, IHttpContextAccessor contextAccessor) : base(configuration, messager, contextAccessor)
+        public UserPhonebookController(IPhoneBookRepository phonebookRepository,
+            IOptionsSnapshot<AppSettings> appSettings, IMessager messager, 
+            IHttpContextAccessor contextAccessor) : base(appSettings, messager, contextAccessor)
         {
             _phonebookRepository = phonebookRepository;
             _phonebookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);

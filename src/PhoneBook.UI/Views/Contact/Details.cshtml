@@ -7,11 +7,9 @@
 <h1 class="title">Details for Contact @Model.FirstName @Model.Lastname</h1>
 
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new {@class="button is-small"}) |
-    @Html.ActionLink("New Number", "Create","TelephoneNumber", new { id = Model.Id }, new {@class="button is-small"}) |
-    @Html.ActionLink("Back to PhoneBooks", "Index","UserPhoneBook", new { id = Model.Id }, new {@class="button is-small"}) |
-
-    <a asp-action="Details" asp-controller="UserPhoneBook" asp-route-id="@Model.PhoneBookId">Back to List</a>
+    @Html.ActionLink("Edit Contact", "Edit", new { id = Model.Id }, new {@class="button is-small"}) |
+    @Html.ActionLink("Add Number", "Create","TelephoneNumber", new { id = Model.Id }, new {@class="button is-small"}) |
+    <a asp-action="Details" asp-controller="UserPhoneBook" asp-route-id="@Model.PhoneBookId" class="button is-small">Back to PhoneBook</a>
 </div>
 
 <div>
@@ -30,21 +28,20 @@
         <tbody>
             @foreach (var item in Model.PhoneNumbers)
             {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Number)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumberType)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", nameof(TelephoneNumber), new { id = item.Id }, new {@class="button is-small"}) |
-                    @Html.ActionLink("Details", "Details", nameof(TelephoneNumber), new { id = item.Id }, new {@class="button is-small"}) |
-                    @Html.ActionLink("Delete", "Delete", nameof(TelephoneNumber), new { id = item.Id }, new {@class="button is-small is-danger"})
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NumberType)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", nameof(TelephoneNumber), new { id = item.Id }, new { @class = "button is-small" }) |
+                        @Html.ActionLink("Details", "Details", nameof(TelephoneNumber), new { id = item.Id }, new { @class = "button is-small" }) |
+                        @Html.ActionLink("Delete", "Delete", nameof(TelephoneNumber), new { id = item.Id }, new { @class = "button is-small is-danger" })
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
-
 </div>

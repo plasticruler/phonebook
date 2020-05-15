@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PhoneBook.UI.Configuration;
 using PhoneBook.UI.Infrastructure;
 using PhoneBook.UI.Infrastructure.Messager;
 using PhoneBook.UI.Models;
@@ -18,8 +20,8 @@ namespace PhoneBook.UI.Controllers
 
         public TelephoneNumberController(IPhoneBookRepository phoneBookRepository, 
                                     IMessager messager,
-                                    IConfiguration configuration,
-                                    IHttpContextAccessor contextAccessor): base(configuration, messager, contextAccessor)
+                                   IOptionsSnapshot<AppSettings> appSettings,
+                                    IHttpContextAccessor contextAccessor): base(appSettings, messager, contextAccessor)
         {            
             _phoneBookRepository = phoneBookRepository;
             _phoneBookRepository.SetAuthKey(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Sid).Value);
@@ -76,6 +78,7 @@ namespace PhoneBook.UI.Controllers
                 var n = _phoneBookRepository.GetTelephoneNumber(telephoneNumber.Id);
                 n.Number = telephoneNumber.Number;
                 n.NumberType = telephoneNumber.NumberType;
+                _phoneBookRepository.UpdateTelephoneNumber(n);                
                 return RedirectToAction("Details","Contact", new { id = n.ContactId });
             }
             catch (Exception ex)

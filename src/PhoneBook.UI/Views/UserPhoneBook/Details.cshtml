@@ -1,5 +1,5 @@
 ﻿@model PhoneBook.UI.Models.UserPhonebook
-
+ 
 @{
     ViewData["Title"] = "Details";
 }
@@ -8,7 +8,7 @@
 
 <p>
     <a asp-action="Create" class="button is-small">New PhoneBook</a> |
-    <a asp-action="Create" class="button is-small" asp-controller="Contact" asp-route-id="@Model.Id">New Contact</a>
+    <a asp-action="Create" class="button is-small" asp-controller="Contact" asp-route-id="@Model.Id">New Contact</a> | 
     <a asp-action="Details" class="button is-small" asp-controller="User" asp-route-id="@Model.UserId">Back to PhoneBooks</a>
 </p>
 
